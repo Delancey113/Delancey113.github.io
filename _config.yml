@@ -1,0 +1,9 @@
+title: 网络渗透实验博客
+description: 记录网络安全、渗透测试实验报告
+baseurl: ""
+url: "https://delancey113.github.io"
+
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
