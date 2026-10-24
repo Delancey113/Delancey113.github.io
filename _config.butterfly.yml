@@ -163,7 +163,15 @@ footer:
   custom_text: 用 Hexo + Butterfly 搭建
 
 # ---------- 视觉效果（按需开启）----------
-background: url(/img/site-background.jpg)   # 全站背景图
+background: /img/site-background.jpg   # 全站背景图（只写路径，不要写 url(...)）
+
+# 背景图生效需要的额外样式：
+# 1) 去掉 body 自带的白底，否则会把背景图盖住
+# 2) 内容卡片改成半透明，既透出背景又保证文字可读
+inject:
+  head:
+    - '<style>:root{--global-bg:transparent;--card-bg:rgba(255,255,255,.82)}[data-theme="dark"]{--global-bg:transparent;--card-bg:rgba(0,0,0,.55)}</style>'
+  bottom:
 theme_color:
   enable: false           # 开启后可在页面右下角切换主题色
   meta_theme_color:
