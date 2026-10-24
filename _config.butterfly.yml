@@ -48,7 +48,7 @@ aside:
     category: true
   card_author:
     enable: true
-    description: 网络渗透课程作业记录
+    description: 探索之路
     button:
       enable: true
       icon: fab fa-github
