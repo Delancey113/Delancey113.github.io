@@ -1,9 +1,52 @@
+# -------------------------- 站点基础配置 --------------------------
 title: 网络渗透实验博客
-description: 记录网络安全、渗透测试实验报告
-baseurl: ""
+subtitle: 记录网络安全、渗透测试实验报告
+name: delancey113
+email: ""
+description: 网络安全学习笔记、实验记录
 url: "https://delancey113.github.io"
-
+baseurl: ""
 markdown: kramdown
-theme: minima
+
+# -------------------------- 远程主题配置（Minimal Mistakes） --------------------------
+remote_theme: mmistakes/minimal-mistakes
 plugins:
+  - jekyll-remote-theme
+  - jekyll-include-cache
   - jekyll-feed
+
+# -------------------------- 文章默认模板配置 --------------------------
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: false
+      share: false
+      related: true
+
+# -------------------------- 侧边作者信息（头像、简介、链接） --------------------------
+author:
+  name: delancey113
+  avatar: "/assets/images/avatar.jpg"
+  bio: 网安学习记录
+  links:
+    - label: "GitHub"
+      icon: "fab fa-github"
+      url: "https://github.com/delancey113"
+
+# -------------------------- 顶部导航栏菜单 --------------------------
+navbar:
+  title: 网络渗透实验博客
+  links:
+    - label: "Home"
+      url: /
+    - label: "Archives"
+      url: /posts/
+    - label: "分类"
+      url: /categories/
+    - label: "标签"
+      url: /tags/
