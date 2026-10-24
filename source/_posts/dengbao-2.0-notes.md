@@ -8,8 +8,8 @@ tags:
   - 等保2.0
   - 合规
 description: 网络安全等级保护制度 2.0 的等级划分、相较 1.0 的变化以及基本要求框架。
-cover: /img/default-cover.jpg
-top_img: /img/index-banner.jpg
+cover: /img/cover-ripples.jpg
+top_img: /img/cover-ripples.jpg
 ---
 
 对网络安全等级保护制度2.0理解 

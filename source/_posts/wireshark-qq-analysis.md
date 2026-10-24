@@ -9,8 +9,8 @@ tags:
   - 抓包分析
   - TLS
 description: 抓包分析 QQ 通信流量，验证 TLS 加密下能否还原聊天内容与图片。
-cover: /img/default-cover.jpg
-top_img: /img/index-banner.jpg
+cover: /img/cover-window.jpg
+top_img: /img/cover-window.jpg
 ---
 
 ## 实验环境

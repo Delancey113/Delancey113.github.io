@@ -82,8 +82,7 @@ aside:
 
 # ---------- 社交图标 ----------
 social:
-  fab fa-github: https://github.com/yourname || Github
-  fas fa-envelope: mailto:1184406672@qq.com || 邮箱
+  fab fa-github: https://github.com/Delancey113 || Github
 
 # ---------- 首页文章卡片 ----------
 index_post_content:
@@ -164,7 +163,7 @@ footer:
   custom_text: 用 Hexo + Butterfly 搭建
 
 # ---------- 视觉效果（按需开启）----------
-background: ''            # 全局背景图，留空则用纯色
+background: url(/img/site-background.jpg)   # 全站背景图
 theme_color:
   enable: false           # 开启后可在页面右下角切换主题色
   meta_theme_color:
