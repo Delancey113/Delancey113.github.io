@@ -24,6 +24,6 @@ comments: false
 ## 联系我
 
 - GitHub：[Delancey113](https://github.com/Delancey113)
-- 邮箱：待补充
+- 邮箱：[1184406672@qq.com](mailto:1184406672@qq.com)
 
 > 如果文章中有理解偏差或操作疏漏，欢迎指出，我会及时更正。
