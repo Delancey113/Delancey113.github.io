@@ -1,0 +1,255 @@
+# ==============================================
+# Butterfly 主题配置
+# 这个文件会「覆盖」主题自带的 _config.yml，
+# 只写你想改的项即可，其余用主题默认值。
+# ==============================================
+
+# ---------- 导航菜单（顶部导航栏）----------
+# 格式：显示名: 路径 || 图标类名
+menu:
+  首页: / || fas fa-home
+  归档: /archives/ || fas fa-archive
+  标签: /tags/ || fas fa-tags
+  分类: /categories/ || fas fa-folder-open
+  关于我: /about/ || fas fa-user
+  友情链接: /link/ || fas fa-link
+
+# ---------- 图片（全部放在 source/img/ 下）----------
+favicon: /img/favicon.png
+avatar:
+  img: /img/avatar.png
+  effect: false        # true 时头像会一直转圈
+
+disable_top_img: false
+index_img: /img/index-banner.jpg          # 首页顶部大横幅
+default_top_img: /img/index-banner.jpg    # 文章没写 top_img 时用这张
+archive_img: /img/index-banner.jpg        # 归档页横幅
+tag_img: /img/index-banner.jpg            # 标签页横幅
+category_img: /img/index-banner.jpg       # 分类页横幅
+
+# ---------- 文章封面（首页卡片上的图）----------
+cover:
+  index_enable: true       # 首页显示封面
+  aside_enable: true       # 侧边栏最新文章显示封面
+  archives_enable: true    # 归档页显示封面
+  position: both           # left / right / both（左右交替）
+  default_cover:
+    - /img/default-cover.jpg
+
+# ---------- 侧边栏 ----------
+aside:
+  enable: true
+  hide: false
+  button: true
+  mobile: true             # 手机上折叠成按钮
+  position: right          # 侧边栏在右（left 为左）
+  display:
+    archive: true
+    tag: true
+    category: true
+  card_author:
+    enable: true
+    description: 记录学习与折腾的日常
+    button:
+      enable: true
+      icon: fab fa-github
+      text: 关注我
+      link: https://github.com/Delancey113
+  card_announcement:
+    enable: true
+    content: 欢迎来到我的博客 🦋 记录学习与折腾的日常
+  card_recent_post:
+    enable: true
+    limit: 5
+    sort: date
+  card_categories:
+    enable: true
+    limit: 8
+    expand: none
+  card_tags:
+    enable: true
+    limit: 40
+    sort: false
+  card_archives:
+    enable: true
+    type: monthly
+    format: MMMM YYYY
+    order: -1
+    limit: 8
+  card_webinfo:
+    enable: true
+    post_count: true
+    last_push_date: true
+
+# ---------- 社交图标 ----------
+social:
+  fab fa-github: https://github.com/yourname || Github
+  fas fa-envelope: mailto:your@email.com || 邮箱
+
+# ---------- 首页文章卡片 ----------
+index_post_content:
+  method: 2                # 1: 摘要 2: 全文前一段 3: 全文
+  length: 200
+
+# ---------- 文章元信息 ----------
+post_meta:
+  page:
+    date_type: created
+    date_format: date
+    categories: true
+    tags: true
+    label: true
+  post:
+    date_type: both        # created / updated / both
+    date_format: date
+    categories: true
+    tags: true
+    label: true
+
+# ---------- 目录 TOC ----------
+toc:
+  enable: true
+  number: false
+  expand: false
+  style_simple: false      # 阅读模式下显示
+  scroll_percent: true     # 右上角显示阅读进度百分比
+
+# ---------- 字数统计 ----------
+wordcount:
+  enable: true
+  post_wordcount: true     # 单篇字数
+  min2read: true           # 阅读时长
+  total_wordcount: true    # 站点总字数
+
+# ---------- 代码高亮 ----------
+highlight_theme: mac       # darker / pale night / light / ocean / mac / mac light
+highlight_copy: true       # 复制按钮
+highlight_lang: true       # 显示语言
+highlight_shrink: false    # false 默认展开
+highlight_height_limit: false
+code_word_wrap: true
+
+# ---------- 搜索 ----------
+local_search:
+  enable: true
+  preload: false
+  top_n_per_article: 1
+  unescape: false
+  CDN:
+
+# ---------- 文章页其他 ----------
+post:
+  anchor: true
+  last_updated:
+    enable: true
+    format: relative      # relative / date
+  copyright:
+    enable: true
+    license: CC BY-NC-SA 4.0
+    license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+  edit_only: false
+  ai_summary: false
+
+# ---------- 相关文章 ----------
+related_post:
+  enable: true
+  limit: 6
+  date_type: created
+
+# ---------- 页脚 ----------
+footer:
+  owner:
+    enable: true
+    since: 2026
+  copyright: true
+  custom_text: 用 Hexo + Butterfly 搭建
+
+# ---------- 视觉效果（按需开启）----------
+background: ''            # 全局背景图，留空则用纯色
+theme_color:
+  enable: false           # 开启后可在页面右下角切换主题色
+  meta_theme_color:
+  button: true
+  theme_color:
+    - '#425AEF'
+darkmode:
+  enable: true            # 深色模式切换按钮
+  button: true
+  autoChangeMode: false
+  start: 6                # 6点到18点自动浅色
+  end: 18
+preloader:
+  enable: false
+  source: 1
+  pace_css_url:
+loading_img: /img/loading.gif
+
+# ---------- 背景动画 / 鼠标特效（默认关闭，省性能）----------
+canvas_ribbon:
+  enable: false
+canvas_fluttering_ribbon:
+  enable: false
+canvas_nest:
+  enable: false
+fireworks:
+  enable: false
+  zIndex: 9999
+  mobile: false
+click_heart:
+  enable: false
+clickShowText:
+  enable: false
+
+# ---------- 数学公式（默认关闭，见 README 开启方法）----------
+mathjax:
+  enable: false
+  per_page: false
+katex:
+  enable: false
+  per_page: false
+
+# ---------- 评论（默认关闭，见 README 开启方法）----------
+comments:
+  enable: false
+  use:
+  text: true
+  lazyload: false
+  count: false
+  card_post_count: false
+
+# ---------- 分享 ----------
+sharejs:
+  enable: false
+
+# ---------- 访问统计 ----------
+busuanzi:
+  site_uv: true
+  site_pv: true
+  page_pv: true
+
+# ---------- 图片灯箱 ----------
+medium_zoom: true
+fancybox: true
+lazyload:
+  enable: true
+  field: site
+  placeholder:
+  blur: false
+
+# ---------- PWA / instantpage ----------
+instantpage: true
+pjax:
+  enable: true
+
+# ---------- 顶部进度条 ----------
+pace:
+  enable: true
+  theme_color:
+
+# ---------- 中英繁简切换 ----------
+translate:
+  enable: false
+
+# ---------- 404 页面 ----------
+error_img:
+  flink: /img/default-cover.jpg

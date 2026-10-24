@@ -1,8 +1,16 @@
 ---
-layout: post
 title: Wireshark抓取QQ通信流量分析实验
-date: 2026-10-17
-categories: 网络渗透
+date: 2026-10-17 12:00:00
+updated: 2026-10-17 12:00:00
+categories:
+  - 网络渗透
+tags:
+  - Wireshark
+  - 抓包分析
+  - TLS
+description: 抓包分析 QQ 通信流量，验证 TLS 加密下能否还原聊天内容与图片。
+cover: /img/default-cover.jpg
+top_img: /img/index-banner.jpg
 ---
 
 ## 实验环境
@@ -26,7 +34,7 @@ categories: 网络渗透
 3. 使用十六进制查找JPG图片特征码`ff d8 ff`，Wireshark提示无分组包含这些字节流。
 原因：图片数据经过TLS加密后变成密文，不存在明文JPG文件头。依靠文件魔术字提取文件的方法对TLS加密流量无效，该方法仅适用于HTTP明文传输场景。
 
-![wireshark截图]({{ site.baseurl }}/wireshark.png)
+![wireshark截图](/img/wireshark.png)
 
 ## 实验总结
 新版QQ通信使用TLS加密，采用TCP与UDP混合传输。抓包仅能看到IP地址、端口等网络层信息，无法直接读取聊天内容。基于文件头部特征码的流量文件提取技术，不能提取TLS加密流量中的图片。
