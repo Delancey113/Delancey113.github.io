@@ -12,7 +12,6 @@ menu:
   标签: /tags/ || fas fa-tags
   分类: /categories/ || fas fa-folder-open
   关于我: /about/ || fas fa-user
-  友情链接: /link/ || fas fa-link
 
 # ---------- 图片（全部放在 source/img/ 下）----------
 favicon: /img/favicon.png
@@ -49,7 +48,7 @@ aside:
     category: true
   card_author:
     enable: true
-    description: 记录学习与折腾的日常
+    description: 网络渗透课程作业记录
     button:
       enable: true
       icon: fab fa-github
@@ -57,7 +56,7 @@ aside:
       link: https://github.com/Delancey113
   card_announcement:
     enable: true
-    content: 欢迎来到我的博客 🦋 记录学习与折腾的日常
+    content: 记录网络渗透课程的实验与作业
   card_recent_post:
     enable: true
     limit: 5

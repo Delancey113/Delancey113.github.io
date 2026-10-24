@@ -6,8 +6,8 @@
 # ---- Site 站点信息 ----
 title: 雨季不再来
 subtitle: '明写春诗'
-description: '学习笔记 · 记录与分享'
-keywords: 博客, 深度学习, 编程
+description: '网络渗透课程作业 · 实验记录与笔记'
+keywords: 网络渗透, Wireshark, 抓包分析, 等保2.0
 author: Delancey113
 language: zh-CN
 timezone: Asia/Shanghai
