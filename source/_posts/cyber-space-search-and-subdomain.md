@@ -9,8 +9,8 @@ tags:
   - 网络空间测绘
   - 子域名收集
 description: 使用 ZoomEye 检索网络空间资产，并结合搜索引擎语法、证书透明度日志与 DNS 聚合完成子域名收集。
-cover: /img/default-cover.jpg
-top_img: /img/index-banner.jpg
+cover: /img/zoomeye-cover.jpg
+top_img: /img/zoomeye-cover.jpg
 ---
 ## 一、实验目的
 
