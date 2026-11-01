@@ -16,7 +16,7 @@ top_img: /img/index-banner.jpg
 
 > 课程作业记录：以 curl 为主线，走完"环境确认 → HTTP 报文分析 → 请求改造 → 资产发现 → 服务识别 → Web 探测 → 会话分析"的完整流程。
 >
-> **免责声明**：本实验全部在我本机的虚拟机环境中完成（Kali 攻击机 + Metasploitable2 靶机），靶机与互联网隔离。文中所有命令仅用于学习，请勿对未授权的目标使用。
+
 
 ---
 
@@ -26,9 +26,9 @@ top_img: /img/index-banner.jpg
 | --- | --- | --- | --- |
 | 宿主机 | Windows 11 | — | 运行 VMware，仅用于写文档 |
 | 攻击机 | Kali Linux | 192.168.23.128 | VMware NAT（vmnet8） |
-| 靶机 | Metasploitable 2 | 192.168.23.129 | 故意留洞的练习靶机 |
+| 靶机 | Metasploitable 2 | 192.168.23.129 | 靶机 |
 
-### 1.1 先看自己长什么样
+### 1.1 网卡
 
 ```bash
 ip a
@@ -40,7 +40,7 @@ ip a
 
 `/24` 的意思是前 24 位固定，最后一位可变 —— 相当于一条街道 `192.168.23.0/24`，能住 254 户。
 
-### 1.2 再看路怎么走
+### 1.2 路由
 
 ```bash
 ip route
@@ -56,7 +56,7 @@ default via 192.168.23.2 dev eth0 proto dhcp src 192.168.23.128 metric 100
 - **`default via`**：凡不在这条街上的目标，一律交给 `.2`（NAT 网关）绕出去
 - **`scope link`**：这条街上的地址直接从 `eth0` 送过去，**不需要经过网关**
 
-**判断标准：`scope link` 那一行的网段，就是你能直接打到、不需要任何转发的范围。**
+
 
 完整拓扑：
 
@@ -68,7 +68,6 @@ default via 192.168.23.2 dev eth0 proto dhcp src 192.168.23.128 metric 100
 | 192.168.23.128 | 我的 Kali |
 | 192.168.23.129 | 靶机 |
 
-> **安全前提**：靶机必须处于 NAT 或 Host-Only 模式，绝不能桥接。桥接等于把一台满是漏洞的机器直接扔到校园网里。`192.168.23.x` 是 VMware 在电脑内部造的虚拟局域网，外面的人看不见。
 
 ---
 
@@ -88,7 +87,6 @@ Protocols: ... http https ... ftp ldap mqtt rtsp ... ws wss
 Features: alt-svc AsynchDNS brotli ... HTTP2 HTTP3 HTTPS-proxy ...
 ```
 
-三个值得注意的点：
 
 1. **TLS 后端是 OpenSSL**。同一份 curl 在 Windows 上走的是 Schannel，两者 TLS 指纹不同。
 2. **`Protocols` 里有 20 多种协议**，不只有 HTTP —— `ftp`、`ldap`、`mqtt`、`ws` 都在。
@@ -96,7 +94,7 @@ Features: alt-svc AsynchDNS brotli ... HTTP2 HTTP3 HTTPS-proxy ...
 
 ---
 
-## 三、发出第一个请求，学会读响应
+## 三、发出第一个请求
 
 ```bash
 curl http://httpbin.org/get
@@ -154,9 +152,9 @@ curl 用三种前缀标记信息来源：
 { ... }                          ← 响应体
 ```
 
-**那个空行是所有 HTTP 报文的分水岭。** 头在上面，体在下面。
+**空行是所有 HTTP 报文的分水岭。** 头在上面，体在下面。
 
-顺便注意 `from 192.168.23.128 port 38456` —— 源端口是系统随机分配的临时端口。一条 TCP 连接由**四元组**唯一确定：源 IP、源端口、目标 IP、目标端口。这也是"改源端口绕过出口防火墙"这类技巧的原理。
+`from 192.168.23.128 port 38456` —— 源端口是系统随机分配的临时端口。一条 TCP 连接由**四元组**唯一确定：源 IP、源端口、目标 IP、目标端口。这也是"改源端口绕过出口防火墙"这类技巧的原理。
 
 输出末尾还有一行：
 
@@ -166,7 +164,7 @@ curl 用三种前缀标记信息来源：
 * Connection #0 to host httpbin.org:80 left intact
 ```
 
-`left intact` 说明连接**没有被关闭**，被留在池子里复用 —— 这就是 **keep-alive**。HTTP/1.1 默认开启，所以响应头里反而看不到 `Connection: keep-alive`，只有服务端想主动断开时才写 `Connection: close`。
+`left intact` 说明连接**没有被关闭** —— 这就是 **keep-alive**。HTTP/1.1 默认开启，所以响应头里反而看不到 `Connection: keep-alive`，只有服务端想主动断开时才写 `Connection: close`。
 
 ---
 
@@ -180,7 +178,7 @@ curl -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
 
 ![UA 伪装](/img/curl-05-ua-spoof.png)
 
-返回的 `User-Agent` 已经变成 Chrome。但注意：**`Accept` 还是 `*/*`**，只有 UA 变了而已，还是一眼假。
+返回的 `User-Agent` 变成 Chrome。
 
 ### 5.2 一次性塞进多个请求头
 
@@ -194,10 +192,6 @@ curl -H "User-Agent: Mozilla/5.0 ... Chrome/141.0.0.0 Safari/537.36" \
 
 ![多请求头](/img/curl-06-multi-headers.png)
 
-请求头从 3 条变成 5 条。两条必须记住的规则：
-
-1. **`-H` 是覆盖，不是追加。** 写了自己的 `Accept`，curl 默认那条 `*/*` 就消失了。
-2. **别乱加 `Accept-Encoding`。** 加了 `gzip` 却不配 `--compressed`，收到的就是一堆乱码。
 
 ---
 
@@ -281,7 +275,7 @@ $ curl -v https://httpbin.org/get
 * Connection #0 to host httpbin.org:443 left intact
 ```
 
-这段输出值得从头读到尾，因为它把一次 HTTPS 请求拆成了三层：**TCP 连接 → TLS 握手 → HTTP 报文**。三种前缀就是三层的分界：
+它把一次 HTTPS 请求拆成了三层：**TCP 连接 → TLS 握手 → HTTP 报文**。三种前缀就是三层的分界：
 
 | 前缀 | 谁在说话 |
 | --- | --- |
@@ -289,7 +283,7 @@ $ curl -v https://httpbin.org/get
 | `>` | 我发出去的（请求行 + 请求头） |
 | `<` | 服务器回的（状态行 + 响应头） |
 
-`From 192.168.23.128 port 49156` 那一行也别跳过：**源端口 49156 是随机的，目标端口 443 是固定的**。一条 TCP 连接由源 IP、源端口、目标 IP、目标端口这四元组唯一确定。有些出口防火墙只放行 53 或 80，把源端口伪装成 53 偶尔能混过去 —— 这就是"端口绕过"的由来。
+`From 192.168.23.128 port 49156` ：**源端口 49156 是随机的，目标端口 443 是固定的**。一条 TCP 连接由源 IP、源端口、目标 IP、目标端口这四元组唯一确定。有些出口防火墙只放行 53 或 80，把源端口伪装成 53 偶尔能混过去 —— 这就是"端口绕过"的由来。
 
 ### 6.1 协商阶段
 
@@ -332,7 +326,7 @@ $ curl -v https://httpbin.org/get
 
 **证书还是情报来源**：这张证书泄露了主域名 `postmanlabs.com`。所有证书签发记录都公开存档在证书透明度（CT）日志里，去 `crt.sh` 搜一个域名，就能挖出它全部历史子域名 —— 这是子域名枚举最省力的一招。
 
-### 6.3 curl 凭什么相信这张证书？
+### 6.3 curl 为什么相信这张证书？
 
 ```
 * SSL Trust Anchors:
@@ -376,7 +370,6 @@ how to fix it, please visit the webpage mentioned above.
 
 注意 **`could not establish a secure connection`** —— 连接根本没建立，一个字节的网页内容都没拿到。这是**硬失败**，不是警告。
 
-顺手学一个脚本必备技巧：
 
 ```bash
 curl https://expired.badssl.com/; echo "退出码: $?"
@@ -436,7 +429,7 @@ Nmap done: 256 IP addresses (5 hosts up) scanned in 3.00 seconds
 | `00:50:56` | VMware 分配给**宿主侧虚拟设备**（虚拟网卡、NAT、DHCP） |
 | `00:0C:29` | VMware 分配给**虚拟机本身** |
 
-所以 `.1`（虚拟网卡）、`.2`（NAT 网关）、`.254`（DHCP）都是设施，`00:0C:29` 开头的 `.129` 才是真正可以打的靶机。
+所以 `.1`（虚拟网卡）、`.2`（NAT 网关）、`.254`（DHCP）都是设施，`00:0C:29` 开头的 `.129` 是真正可以打的靶机。
 
 这个技巧在内网里通用：不同厂商的 OUI 不同，能快速区分打印机、摄像头、服务器。
 
@@ -480,7 +473,7 @@ Service Info: Hosts: metasploitable.localdomain, irc.Metasploitable.LAN
 
 **1. `(reset)` 说明没有防火墙。** 关闭的端口主动回 RST，是"我不收"。如果是 `filtered`，说明包被中途丢弃 —— 那才是有防火墙。
 
-**2. 版本清一色 2008 年。** Apache 2.2.8、MySQL 5.0.51a、PostgreSQL 8.3。判断标准：软件版本比人还老的"服务器"，一定是靶场。
+**2. 版本清一色 2008 年。** Apache 2.2.8、MySQL 5.0.51a、PostgreSQL 8.3。判断标准：软件版本比较老的"服务器"，一定是靶场。
 
 **3. `Service Info` 直接交代了主机名。** 一台正常服务器不会把 `metasploitable.localdomain` 一字不差地写在 banner 里。这是最典型的信息泄露 —— 我什么都没做，只是扫了一下端口。
 
@@ -545,7 +538,7 @@ Login with msfadmin/msfadmin to get started
 
 那 5 个链接就是**攻击面** —— 浏览器里看是漂亮网页，curl 里看是 5 个待探测路径。
 
-**curl 的本质在这里体现得很清楚：它不渲染，它给你原始字节。** 那个 ASCII art 在浏览器里是图案，在 curl 里是一堆空格和竖线。渗透要的是数据，不是好看。
+**curl 的本质在这里体现得很清楚：它不渲染，它给你原始字节。** 那个 ASCII art 在浏览器里是图案，在 curl 里是一堆空格和竖线。
 
 ### 8.3 批量探测（目录扫描雏形）
 
@@ -587,8 +580,6 @@ curl -s -o /dev/null -w "%{http_code}\n" http://192.168.23.129/thispagedoesnotex
 ```
 404
 ```
-
-**这一步不能省。** 有些站配置了"软 404" —— 任何不存在的路径都返回 200 加一个错误页。没有对照组，你会把全站当成"存在"。**先拿到 404 长什么样，再判断其他结果。**
 
 ### 8.5 状态码判读
 
@@ -699,7 +690,7 @@ cat cookies.txt
 - `security` 的路径是 `/dvwa` → **只有访问 `/dvwa` 下才发送**
 - `PHPSESSID` 的路径是 `/` → 全站发送
 
-所以 `curl http://192.168.23.129/` 时，`security` **根本不会被带上**。很多人说"我明明设了 cookie 服务器怎么没收到"，八成是路径不匹配。
+所以 `curl http://192.168.23.129/` 时，`security` **根本不会被带上**。
 
 ### 10.3 验证会话保持
 
@@ -711,7 +702,7 @@ curl -sS -b cookies.txt -i http://192.168.23.129/dvwa/
 
 响应里**一条 `Set-Cookie` 都没有**。
 
-新手会以为失败了。**恰恰相反，这是成功的证据**：服务器看到熟悉的 `PHPSESSID`，知道是老访客，不需要新建会话，也就不需要再发一次。
+服务器看到熟悉的 `PHPSESSID`，知道是老访客，不需要新建会话，也就不需要再发一次。
 
 **判断标准：没有 `Set-Cookie` = 认出来了；有新的 `PHPSESSID` = 没认出来。**
 
@@ -734,7 +725,7 @@ Location: login.php
 
 **2. 服务器没有把 `security` 改回 `high`。**
 
-这是关键。第一次请求（完全不带 cookie）时，服务器主动下发了 `Set-Cookie: security=high` —— 说明默认值是 high。而这次我带了 `security=low`，它**一句话没说，直接接受了**。
+第一次请求（完全不带 cookie）时，服务器主动下发了 `Set-Cookie: security=high` —— 说明默认值是 high。而这次我带了 `security=low`，它**一句话没说，直接接受了**。
 
 **它没有纠正我，说明安全等级由客户端说了算。**
 
@@ -742,19 +733,8 @@ Location: login.php
 
 **用"服务器有没有纠正我"来判断它信不信客户端**，这个思路比背漏洞名字有用得多。
 
----
 
-## 十一、踩过的坑（写给同样入门的人）
-
-1. **`cur--version` / `curl--version`** —— 漏字母、漏空格。命令行的报错会明说哪个词不认（`command not found: cur`），**先看它说哪个词，而不是急着重装**。
-2. **PowerShell 里 `curl` 是别名** —— Windows PowerShell 把 `curl` 映射到了 `Invoke-WebRequest`，必须写 `curl.exe`。
-3. **`-o /dev/null` 挡不住进度条** —— 进度条走 stderr，要加 `-s`。但只写 `-s` 会把错误也吞掉，**正确写法是 `-sS`**。
-4. **`-k` 之后忘了自己在不安全状态** —— `-k` 方便，但它把"对面是谁"这层保护彻底拆了，只在测试环境用。
-5. **不测 404 对照组** —— 遇到软 404 的站点，整个扫描结果全是假阳性。
-
----
-
-## 十二、总结：curl 在渗透流程里的位置
+## 十一、总结：curl 在渗透流程里的位置
 
 ```
 信息收集 ──────→ 服务识别 ──────→ 漏洞验证 ──────→ 后渗透
@@ -799,15 +779,6 @@ curl 的真正价值不是"能发请求"，而是**它让每一个字节都可�
 | 03-11 | `curl-20-session-keep.png` | `-b cookies.txt` |
 | 03-12 | `curl-21-cookie-mod.png` | `-b "security=low"` |
 
-### 为什么有两处只有文字没有截图
-
-**HTTPS 握手**和**证书过期报错**这两处，我用的是终端原文而不是截图，原因很实际：
-
-1. `-v` 的输出有七八十字宽，截图后缩到正文宽度，`TLS_AES_256_GCM_SHA384` 这种长串基本糊成一团；
-2. 报错那几行一共四个，截图的框要拉得很小，反而看不清；
-3. 文本可以复制、可以搜索，读者照着敲能对得上。
-
-**截图证明"我真的跑过"，文本负责"能看清细节"。** 这一篇里两者都有，缺一样都不完整。
 
 ---
 
